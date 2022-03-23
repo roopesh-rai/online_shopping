@@ -88,6 +88,7 @@ class Product(models.Model):
     brand = models.CharField(max_length=50)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
     product_img = models.ImageField(upload_to='productimg')
+    url = models.URLField()
 
     def __str__(self):
         return str(self.id)

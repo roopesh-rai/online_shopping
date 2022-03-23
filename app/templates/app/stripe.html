@@ -1,51 +1,7 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--  <head>-->
-<!--    <title>Buy cool new product</title>-->
-<!--&lt;!&ndash;    <link rel="stylesheet" href="style.css">&ndash;&gt;-->
-
-
-<!--    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>-->
-<!--    <script src="https://js.stripe.com/v3/"></script>-->
-<!--</head>-->
-<!--<body>-->
-<!--    <section>-->
-<!--      <div class="product">-->
-<!--&lt;!&ndash;        <img src="https://i.imgur.com/EHyR2nP.png" alt="The cover of Stubborn Attachments" />&ndash;&gt;-->
-<!--&lt;!&ndash;        <div class="description">&ndash;&gt;-->
-<!--&lt;!&ndash;          <h3>Stubborn Attachments</h3>&ndash;&gt;-->
-<!--&lt;!&ndash;          <h5>$20.00</h5>&ndash;&gt;-->
-<!--&lt;!&ndash;        </div>&ndash;&gt;-->
-<!--                {% for item in cart_items%}-->
-<!--        <div class="card mb-2">-->
-<!--          <div class="card-body">-->
-<!--            <h5>Product: {{item.product.title}}</h5>-->
-<!--            <p>Quantity: {{item.quantity}}</p>-->
-<!--            <p class="fw-bold">Price: {{item.total_cost}}</p>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      {% endfor %}-->
-<!--      </div>-->
-<!--        <form action="{% url 'charge' %}" method="post">-->
-<!--            {% csrf_token %}-->
-<!--         <script src="https://checkout.stripe.com/checkout.js" class="stripe-button btn-warning mt-3 px-5 fw-bold">-->
-<!--              data-key="pk_test_51Kc58OSEsWQ3QcnFDcpF8AHDQpM5qgcrn5laHQl3e3bqJqtpkFBp0xB3PAp2qFM0bbDpFl5FqBAyFlBN11eNBOx800TPbrep7y"-->
-<!--              data-description = "Payment Gateway"-->
-<!--              data-amount = {{total_cost}}-->
-<!--              data-locate = "auto"-->
-<!--         </script>-->
-<!--        </form>-->
-<!--    </section>-->
-<!--  </body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Buy now</title>
-    <link rel="stylesheet" href="style.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
@@ -141,24 +97,19 @@ button:hover {
 
 </style>
 </head>
-
 <body>
     <section>
         <div class="product">
             <div class="description">
-<!--                <h3>{{ product.title }}</h3>-->
                 <hr />
-              {% for price in prices %}
-
                 <div>
                     <h5>Rs. {{ product.discounted_price }}</h5>
-                    <form action="{% url 'create-checkout-session' price.id %}" method="POST">
+                    <form action="{% url 'create-checkout-session' product.id %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="prod_id" value={{product.id}} id="prod_id">
                         <button type="submit">Checkout</button>
                     </form>
                 </div>
-                {% endfor %}
             </div>
         </div>
     </section>

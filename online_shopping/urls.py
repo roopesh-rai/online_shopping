@@ -22,3 +22,4 @@ urlpatterns = [
     path('', include('app.urls')),
     path('stripe/', HomePageView.as_view(), name='stripe')
 ]
+

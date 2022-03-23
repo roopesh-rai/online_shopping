@@ -68,7 +68,7 @@ urlpatterns = [
     # path('esewa-request/', views.EsewaRequestView.as_view(), name='esewarequest'),
     # path('stripe/', views.stripe, name='stripe'),
     path('topwear/', views.topwear, name='topwear'),
-
+    path('webhooks/stripe/', views.stripe_webhook, name='stripe-webhook'),
     path('cancel/', views.CancelView.as_view(), name='cancel'),
     path('success/', views.SuccessView.as_view(), name='success'),
     path('create-checkout-session/<pk>/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
