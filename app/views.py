@@ -9,9 +9,11 @@ from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from .models import Contact, Price
-# from django.conf import settings
+from django.conf import settings
 from django.views.generic import TemplateView
+from django.core.mail import send_mail
 import stripe
 
 stripe.api_key = STRIPE_SECRET_KEY
@@ -252,8 +254,9 @@ def payment_done(request, **kwargs):
         # context['key'] = settings.STRIPE_PUBLIC_KEY
 
 
-        # return redirect("stripe")
-        return render(request, 'stripe.html')
+        # return redirect("stripe-webhook")
+        return redirect("stripe")
+        # return render(request, 'stripe.html')
 
     # except Exception:
     #     return HttpResponse("Please provide address")
@@ -362,7 +365,7 @@ def search(request):
             allProds.append([prod, range(1, nSlides), nSlides])
     params = {'allProds': allProds}
     if len(allProds) == 0 or len(query) < 4:
-        params = {'msg': 'Please Make Sure To Enter Relevant Search Query'}
+        params = {'msg': 'Please Make Sure To Enter Relevant Search Qukwargsery'}
     return render(request, 'app/search.html', params)
 
 @login_required
@@ -382,12 +385,6 @@ def check_out_form(request):
 
 # def stripe(request):
 #     return render(request, 'app/stripe.html')
-
-# class SuccessView(TemplateView):
-#     template_name = 'app/success.html'
-#
-# class CancelView(TemplateView):
-#     template_name = 'app/cancel.html'
 
 class ProductLandingPageView(TemplateView):
     template_name = 'app/landing.html'
@@ -431,6 +428,9 @@ class CreateCheckoutSessionView(View):
                     'quantity': 1,
                 },
             ],
+            metadata = {
+              "product_id":product.id
+            },
             mode='payment',
             # success_url=settings.BASE_URL + '/app/success/',
             # cancel_url=settings.BASE_URL + '/app/cancel/',
@@ -438,6 +438,51 @@ class CreateCheckoutSessionView(View):
             cancel_url=BASE_URL + '/cancel/',
         )
         return redirect(checkout_session.url)
+
+endpoint_secret = 'whsec_a02f2df803ffa596f42eed01d433d199d66144766f636cd3bf1fe207a14448b4'
+@csrf_exempt
+def stripe_webhook(request):
+  payload = request.body
+  sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+  print(sig_header)
+  event = None
+
+  try:
+    event = stripe.Webhook.construct_event(
+      payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+    )
+  except ValueError as e:
+    # Invalid payload
+    return HttpResponse(status=400)
+  except stripe.error.SignatureVerificationError as e:
+    # Invalid signature
+    return HttpResponse(status=400)
+
+  if event['type'] == 'checkout.session.completed':
+      session = event['data']['object']
+
+      customer_email = session["customer_details"]["email"]
+      product_id = session["metadata"]["product_id"]
+      # Fulfill the purchase...
+      # fulfill_order(session)
+
+      # product = Product.objects.get(id=product_id)
+      product = Product.objects.get(title="Realme C21Y 32 GB")
+
+      send_mail(
+          subject="Here is your product",
+          message="Thanks for your purchase. The URL is {product.url}",
+          recipient_list=[customer_email],
+          from_email="roopesh.rai@plutustec.com",
+      )
+
+  # Passed signature verification
+  return HttpResponse(status=200)
+
+# def fulfill_order(session):
+#   TODO: fill me in
+#   print("Fulfilling order")
+
 
 class SuccessView(TemplateView):
     template_name = "app/success.html"
@@ -466,10 +511,9 @@ class HomePageView(TemplateView):
         # product = Product.objects.get(pk='prod_id')
         # product = self.request.GET.get('prod_id')
         # prod_items = Product.objects.filter(Q(id=product.id))
-        prices = Product.objects.filter(discounted_price=product.discounted_price)
+        # prices = Product.objects.filter(discounted_price=product.discounted_price)
         context = super(HomePageView, self).get_context_data(**kwargs)
         context.update({
             "product": product,
-            "prices": prices
         })
         return context

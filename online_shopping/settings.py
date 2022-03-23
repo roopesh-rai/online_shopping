@@ -12,16 +12,16 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os.path
 from pathlib import Path
 
-import environ
-env = environ.Env(
-    DEBUG=(bool, False)
-)
+# import environ
+# env = environ.Env(
+#     DEBUG=(bool, False)
+# )
 # environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-5@!t%veq62!j(0p+mbx9d6vby+&b%lva=rsf&!1q5d1n5yal%u
 DEBUG = True
 # DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0673-103-239-146-99.ngrok.io", "localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -122,10 +122,14 @@ EMAIL_HOST_USER = 'roopesh.rai@plutustec.com'
 EMAIL_HOST_PASSWORD = 'Passwordroopesh'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # SESSION_ENGINE = "django.contrib.sessions.backend.db"
+
 STRIPE_SECRET_KEY = "sk_test_51Kc58OSEsWQ3QcnFUtYfC3nzPkgzVijYocr8k91FxwsReuoHYnoiGq5lmfNiuke5Cyqz0OpS3pD6v7bhmUlPGuij00lzW5EdqD"
 STRIPE_PUBLIC_KEY = "pk_test_51Kc58OSEsWQ3QcnFDcpF8AHDQpM5qgcrn5laHQl3e3bqJqtpkFBp0xB3PAp2qFM0bbDpFl5FqBAyFlBN11eNBOx800TPbrep7y"
-STRIPE_WEBHOOK_SECRET = ""
+STRIPE_WEBHOOK_SECRET = "whsec_ZW3R3fYLkIXb0PDG18eFpYSs9ZMTttnO"

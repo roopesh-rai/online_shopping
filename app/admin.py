@@ -18,7 +18,7 @@ class CustomerModelAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'stripe_product_id', 'selling_price', 'stripe_price_id', 'discounted_price', 'description', 'brand', 'category', 'product_img']
+    list_display = ['id', 'title', 'stripe_product_id', 'selling_price', 'stripe_price_id', 'discounted_price', 'description', 'brand', 'category', 'product_img', 'url']
 
 @admin.register(Cart)
 class CartModelAdmin(admin.ModelAdmin):
