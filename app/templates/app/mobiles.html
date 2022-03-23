@@ -1,0 +1,45 @@
+{% extends 'app/home.html' %}
+{% block title %} Mobiles {% endblock %}
+{% block css %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+{% endblock %}
+{% block body %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="list-group">
+                <a href="{% url 'mobile' %}" class="list-group-item list-group-item-action" aria-current="true">All Mobiles</a>
+                <a href="{% url 'mobiledata' 'Realme'%}" class="list-group-item list-group-item-action" aria-current="true">Realme</a>
+                <a href="{% url 'mobiledata' 'POCO'%}" class="list-group-item list-group-item-action" aria-current="true">POCO</a>
+                <a href="{% url 'mobiledata' 'Below'%}" class="list-group-item list-group-item-action" aria-current="true">Below 10000</a>
+                <a href="{% url 'mobiledata' 'Above'%}" class="list-group-item list-group-item-action" aria-current="true">Above 10000</a>
+            </div></div>
+        <div class="col-sm-8">
+            <div class="row">
+                {% for product in mobiles %}
+                    <div class="col-sm-4 text-center mb-4">
+                        <a href="{% url 'product_details' product.id%}" class="btn">
+                            <div class="item">
+                                <img src="{{product.product_img.url}}" alt="" height="300" class="">
+                                <div class="fw-bold">{{product.title}}</div>
+                                <div class="fw-bold">Rs. {{product.discounted_price}}
+                                    <strike><small class="fw-light text-decoration-line-through">{{product.selling_price}}</small></strike>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+{% endblock %}
