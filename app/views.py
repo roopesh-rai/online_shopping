@@ -517,3 +517,20 @@ class HomePageView(TemplateView):
             "product": product,
         })
         return context
+
+class StripeIntentView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            product = Product.objects.get(title="Realme C21Y 32 GB")
+            intent = stripe.PaymentIntent.create(
+                amount=product.discounted_price,
+                currency='INR',
+                automatic_payment_methods={
+                    'enabled': True,
+                },
+            )
+            return JsonResponse({
+                'clientSecret': intent['client_secret']
+            })
+        except Exception as e:
+            return JsonResponse({'error' : str(e)})

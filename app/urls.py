@@ -73,4 +73,6 @@ urlpatterns = [
     path('success/', views.SuccessView.as_view(), name='success'),
     path('create-checkout-session/<pk>/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
     # path('create-checkout-session/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
+
+    path('create-payment-intent/<pk>/', views.StripeIntentView.as_view(), name='create-payment-intent'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
