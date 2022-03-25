@@ -8,7 +8,9 @@ from .models import (
     OrderPlaced,
     Contact,
     checkoutform,
-    Price
+    Price,
+    Invoice,
+    InvoiceItems,
 )
 # Register your models here.
 
@@ -42,4 +44,12 @@ class OrderPlacedModelAdmin(admin.ModelAdmin):
 
 def customer_info(self, obj):
     link = reverse("admin:app_customer_change", args=[obj.customer.pk])
-    return format_html('<a href="{}">{}</a>', link, obj.customer.name)
+    return format_html('<a href="{}">{}</a>', link, obj.customer.namorder_ide)
+
+@admin.register(Invoice)
+class InvoiceModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'order_id', 'payment_method', 'payment_status', 'total_amount', 'shipping_charge']
+
+@admin.register(InvoiceItems)
+class InvoiceItemsModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'invoice', 'product', 'product_price']

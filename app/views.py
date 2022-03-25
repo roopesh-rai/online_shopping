@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from online_shopping.settings import STRIPE_PUBLIC_KEY, STRIPE_SECRET_KEY
-from .models import Customer, Product, OrderPlaced, Cart, checkoutform
+from .models import Customer, Product, OrderPlaced, Cart, checkoutform, Invoice, InvoiceItems
 from math import ceil
 from django.http import HttpResponse, JsonResponse
 from .forms import CustomerRegistraionForm, CustomerProfileForm
@@ -10,10 +10,14 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from .models import Contact, Price
+from django.core.mail import EmailMessage
+from .models import Contact
 from django.conf import settings
 from django.views.generic import TemplateView
 from django.core.mail import send_mail
+from io import BytesIO
+from django.template.loader import get_template
+import xhtml2pdf.pisa as pisa
 import stripe
 
 stripe.api_key = STRIPE_SECRET_KEY
@@ -517,3 +521,106 @@ class HomePageView(TemplateView):
             "product": product,
         })
         return context
+
+class StripeIntentView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            product = Product.objects.get(title="Realme C21Y 32 GB")
+            intent = stripe.PaymentIntent.create(
+                amount=product.discounted_price,
+                currency='INR',
+                automatic_payment_methods={
+                    'enabled': True,
+                },
+            )
+            return JsonResponse({
+                'clientSecret': intent['client_secret']
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html  = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return result.getvalue()
+    return None
+
+
+class PaymentSuccess(View):
+    def get(self, request):
+        return HttpResponse({'msg', 'Your Payment has been succeed'})
+
+
+class PaymentCancel(View):
+    def get(self, request):
+        return HttpResponse({'msg', 'Your Payment has cancel'})
+
+
+class ShowInvoice(View):
+    def post(self, request, *args, **kwargs):
+        template = get_template('index.html')
+        data = request.data
+        order_id = data['order_id']
+        Order = OrderPlaced.objects.get(id=order_id)
+        # payment = Payment.objects.get(order_id=Order)
+        user = Order.user
+        orderitems = OrderPlaced.objects.filter(order=Order)
+        pdf = render_to_pdf('index.html', {'order_items': orderitems, 'user': user, 'order': Order})
+        return HttpResponse(pdf, content_type='application/pdf')
+
+
+class DownloadInvoice(View):
+    def post(self, request):
+        template = get_template('index.html')
+        data = request.data
+        order_id = data['order_id']
+        Order = OrderPlaced.objects.get(id=order_id)
+        # payment = Payment.objects.get(order_id=Order)
+        user = Order.user
+        invoice = Invoice(user=user, order_id=order_id)
+        invoice.save()
+        orderitems = OrderPlaced.objects.filter(order=Order)
+        for i in orderitems:
+            InvoiceItems.objects.create(invoice=invoice, product=i.product, product_pricee=i.price)
+
+        pdf = render_to_pdf('index.html',
+                            {'invoice': invoice, 'order_items': orderitems, 'user': user, 'order': Order})
+
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Invoice_%s.pdf" % (data['order_id'])
+            content = "inline; filename = '%s'" % (filename)
+            content = "attachment; filename = '%s'" % (filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("not found")
+
+
+class ShareInvoice(View):
+    def post(self, request):
+        template = get_template('index.html')
+        data = request.data
+        order_id = data['order_id']
+        Order = OrderPlaced.objects.get(id=order_id)
+        # payment = Payment.objects.get(order_id=Order)
+        user = Order.user
+        invoice = Invoice(user=user, order_id=order_id)
+        invoice.save()
+        orderitems = OrderPlaced.objects.filter(order=Order)
+        for i in orderitems:
+            InvoiceItems.objects.create(invoice=invoice, product=i.product, product_pricee=i.price)
+
+        pdf = render_to_pdf('index.html',
+                            {'invoice': invoice, 'order_items': orderitems, 'user': user, 'order': Order})
+
+        if pdf:
+            filename = "Invoice.pdf"
+            content = "attachment; filename = '%s'" % (filename)
+            mail_subject = "Recent Order Details"
+            email = EmailMessage(mail_subject, 'this is a message', settings.EMAIL_HOST_USER, [user.email])
+            email.attach('new.pdf', pdf, "application/pdf")
+            email.send()
+        return HttpResponse({'msg': 'Invoice generated!'})

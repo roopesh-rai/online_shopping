@@ -88,6 +88,7 @@ class Product(models.Model):
     brand = models.CharField(max_length=50)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
     product_img = models.ImageField(upload_to='productimg')
+    file = models.FileField(upload_to='product_files/', blank=True, null=True)
     url = models.URLField()
 
     def __str__(self):
@@ -145,3 +146,17 @@ class Price(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     stripe_price_id = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
+
+class Invoice(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_id = models.CharField(max_length=122)
+    payment_method = models.CharField(max_length=122)
+    payment_status = models.CharField(max_length=122)
+    total_amount = models.FloatField(max_length=122)
+    shipping_charge = models.FloatField(default=70.00)
+
+
+class InvoiceItems(models.Model):
+    invoice = models.ForeignKey(Invoice, on_delete = models.CASCADE)
+    product = models.ForeignKey(Product ,on_delete = models.CASCADE, related_name="invoice_product")
+    product_price = models.FloatField(default= 0)
