@@ -537,6 +537,7 @@ class StripeIntentView(View):
                 'clientSecret': intent['client_secret']
             })
         except Exception as e:
+<<<<<<< HEAD
             return JsonResponse({'error': str(e)})
 
 def render_to_pdf(template_src, context_dict={}):
@@ -624,3 +625,6 @@ class ShareInvoice(View):
             email.attach('new.pdf', pdf, "application/pdf")
             email.send()
         return HttpResponse({'msg': 'Invoice generated!'})
+=======
+            return JsonResponse({'error' : str(e)})
+>>>>>>> 59feba6ee2c918b30b5aa2814a36a7466d9b04bc

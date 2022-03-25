@@ -146,6 +146,7 @@ class Price(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     stripe_price_id = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
+<<<<<<< HEAD
 
 class Invoice(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -160,3 +161,5 @@ class InvoiceItems(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete = models.CASCADE)
     product = models.ForeignKey(Product ,on_delete = models.CASCADE, related_name="invoice_product")
     product_price = models.FloatField(default= 0)
+=======
+>>>>>>> 59feba6ee2c918b30b5aa2814a36a7466d9b04bc
