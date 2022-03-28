@@ -361,7 +361,7 @@ function setLoading(isLoading) {
     <h4>Select Shipping Address</h4>
     <hr>
     <form action="/paymentdone" id="myform">
-      {% for ad in add%}
+      {% for ad in add %}
       <div class="card">
         <div class="card-body">
         <h5>{{ad.name}}</h5>
@@ -387,30 +387,23 @@ function setLoading(isLoading) {
               </div>
           </div>
           <form action="/create-checkout-session" method="POST">
+              {% csrf_token %}
               <button type="submit" id="checkout-button">Checkout</button>
           </form>
-          </section>
-            <section>
-            <form id="payment-form">
-              <div id="payment-element">
+            <hr/>
+            <form id="payment-form" action="/create-payment-intent" method="POST">
+              {% csrf_token %}
+               <input type="text" id="email" placeholder="Enter email address" />
+                <div id="payment-element">
                 <!--Stripe.js injects the Payment Element-->
-              </div>
-              <button id="submit" type="submit">
+                </div>
+                <button id="submit" type="submit">
                   <div class="spinner hidden" id="spinner"></div>
                   <span id="button-text">Pay now</span>
-              </button>
-              <div id="payment-message" class="hidden"></div>
+                </button>
+                <div id="payment-message" class="hidden"></div>
             </form>
             </section>
-<!--                Set up a container element for the button -->
-<!--              <div id="paypal-button-container"></div>-->
-<!--            <button type="submit" class="btn btn-warning mt-3 px-5 fw-bold">Continue</button>-->
-<!--          <script src="https://checkout.stripe.com/checkout.js" class="stripe-button btn-warning mt-3 px-5 fw-bold">-->
-<!--              data-key="{{ key }}"-->
-<!--              data-description = "Payment Gateway"-->
-<!--              data-amount = {{product.price}}-->
-<!--              data-locate = "auto"-->
-<!--          </script>-->
         </div>
       </form>
     </div>

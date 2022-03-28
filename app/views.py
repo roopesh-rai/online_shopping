@@ -475,7 +475,7 @@ def stripe_webhook(request):
 
       send_mail(
           subject="Here is your product",
-          message="Thanks for your purchase. The URL is {product.url}",
+          message="Thanks for your purchase.",
           recipient_list=[customer_email],
           from_email="roopesh.rai@plutustec.com",
       )
@@ -561,20 +561,20 @@ class PaymentCancel(View):
 
 class ShowInvoice(View):
     def post(self, request, *args, **kwargs):
-        template = get_template('index.html')
+        template = get_template('stripe.html')
         data = request.data
         order_id = data['order_id']
         Order = OrderPlaced.objects.get(id=order_id)
         # payment = Payment.objects.get(order_id=Order)
         user = Order.user
         orderitems = OrderPlaced.objects.filter(order=Order)
-        pdf = render_to_pdf('index.html', {'order_items': orderitems, 'user': user, 'order': Order})
+        pdf = render_to_pdf('stripe.html', {'order_items': orderitems, 'user': user, 'order': Order})
         return HttpResponse(pdf, content_type='application/pdf')
 
 
 class DownloadInvoice(View):
     def post(self, request):
-        template = get_template('index.html')
+        template = get_template('stripe.html')
         data = request.data
         order_id = data['order_id']
         Order = OrderPlaced.objects.get(id=order_id)
@@ -586,7 +586,7 @@ class DownloadInvoice(View):
         for i in orderitems:
             InvoiceItems.objects.create(invoice=invoice, product=i.product, product_pricee=i.price)
 
-        pdf = render_to_pdf('index.html', {'invoice': invoice, 'order_items': orderitems, 'user': user, 'order': Order})
+        pdf = render_to_pdf('stripe.html', {'invoice': invoice, 'order_items': orderitems, 'user': user, 'order': Order})
 
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
@@ -600,7 +600,7 @@ class DownloadInvoice(View):
 
 class ShareInvoice(View):
     def post(self, request):
-        template = get_template('index.html')
+        template = get_template('stripe.html')
         data = request.data
         order_id = data['order_id']
         Order = OrderPlaced.objects.get(id=order_id)
@@ -612,7 +612,7 @@ class ShareInvoice(View):
         for i in orderitems:
             InvoiceItems.objects.create(invoice=invoice, product=i.product, product_pricee=i.price)
 
-        pdf = render_to_pdf('index.html',{'invoice': invoice, 'order_items': orderitems, 'user': user, 'order': Order})
+        pdf = render_to_pdf('stripe.html', {'invoice': invoice, 'order_items': orderitems, 'user': user, 'order': Order})
 
         if pdf:
             filename = "Invoice.pdf"
