@@ -244,7 +244,7 @@ class CheckoutView(View):
 
 @login_required
 def payment_done(request, **kwargs):
-    # try:
+    try:
         YOUR_DOMAIN = "http://127.0.0.1:8000"
         user = request.user
         custid = request.GET.get('custid')
@@ -262,8 +262,9 @@ def payment_done(request, **kwargs):
         return redirect("stripe")
         # return render(request, 'stripe.html')
 
-    # except Exception:
-    #     return HttpResponse("Please provide address")
+    except Exception:
+        return HttpResponse("Please provide address")
+        # messages.add_message(request,'Please add address from profile or select address in case provided already in profile')
     # return redirect("checkout")
 
 class PaymentdoneView(View):
@@ -343,6 +344,33 @@ class ProfileView(View):
             messages.success(request, 'Profile Updated Successfully')
         return render(request, 'app/profile.html', {'form': form, 'active': 'btn-primary'})
 
+
+# @method_decorator(login_required, name='dispatch')
+# class EditProfileView(View):
+#     def get(self, request):
+#         form = CustomerProfileForm()
+#         return render(request, 'app/editprofile.html', {'form': form, 'active': 'btn-primary'})
+
+@login_required
+def edit_profile(request):
+    # form = CustomerProfileForm(request.POST)
+    try:
+        if request.method == 'POST':
+            # request.user.customer.usr = request.user
+            request.user.customer.name = request.POST.get('name', '')
+            request.user.customer.locality = request.POST.get('locality', '')
+            request.user.customer.city = request.POST.get('city', '')
+            request.user.customer.state = request.POST.get('state', '')
+            request.user.customer.zipcode = request.POST.get('zipcode', '')
+            request.user.customer.save()
+            messages.success(request, 'Profile Updated Successfully')
+            return redirect('checkout')
+        return render(request, 'app/editprofile.html')
+    except Exception:
+        # return redirect("profile")
+        return redirect("profile")
+
+
 @login_required
 def address(request):
     add = Customer.objects.filter(user=request.user)
@@ -419,9 +447,6 @@ def topwear(request):
 class CreateCheckoutSessionView(View):
     def post(self, request, pk, *args, **kwargs):
         BASE_URL = "http://127.0.0.1:8000"
-        # price = Product.objects.get(id=self.kwargs["pk"])
-        # product = Product.objects.get(title="Realme C21Y 32 GB")
-        # product = Product.objects.filter(id=id)
         product = Product.objects.get(pk=pk)
         prod_items = Product.objects.filter(Q(id=product.id))
         checkout_session = stripe.checkout.Session.create(
@@ -436,8 +461,6 @@ class CreateCheckoutSessionView(View):
               "product_id":product.id
             },
             mode='payment',
-            # success_url=settings.BASE_URL + '/app/success/',
-            # cancel_url=settings.BASE_URL + '/app/cancel/',
             success_url=BASE_URL + '/success/',
             cancel_url=BASE_URL + '/cancel/',
         )
@@ -456,10 +479,8 @@ def stripe_webhook(request):
       payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
     )
   except ValueError as e:
-    # Invalid payload
     return HttpResponse(status=400)
   except stripe.error.SignatureVerificationError as e:
-    # Invalid signature
     return HttpResponse(status=400)
 
   if event['type'] == 'checkout.session.completed':
@@ -623,3 +644,4 @@ class ShareInvoice(View):
             email.send()
         return HttpResponse({'msg': 'Invoice generated!'})
             # return JsonResponse({'error' : str(e)})
+

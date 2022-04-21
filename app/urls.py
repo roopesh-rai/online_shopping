@@ -65,6 +65,7 @@ urlpatterns = [
     path('address/', views.address, name='address'),
     path('search/', views.search, name='search'),
     path('charge/', views.charge, name='charge'),
+    path('editprofile/', views.edit_profile, name="editprofile"),
     # path('esewa-request/', views.EsewaRequestView.as_view(), name='esewarequest'),
     # path('stripe/', views.stripe, name='stripe'),
     path('topwear/', views.topwear, name='topwear'),
