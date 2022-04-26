@@ -89,7 +89,6 @@ def cart(request):
     product_id = request.GET.get('prod_id')
     product = Product.objects.get(id=product_id)
     Cart(user=user, product=product).save()
-    # return render(request, 'app/add_to_cart.html')
     return redirect('/cart')
 
 @login_required
@@ -199,9 +198,6 @@ def contact(request):
 def tracker(request):
     return render(request, 'app/tracker.html')
 
-# def search(request):
-#     return render(request, 'app/search.html')
-
 @login_required
 def checkout(request):
     user = request.user
@@ -237,10 +233,7 @@ class CheckoutView(View):
                 tempamount = (1 * p.discounted_price)
                 amount += tempamount
             totalamount = amount + shipping_amount
-            # context = super().get(**kwargs)
-            # context['key'] = settings.STRIPE_PUBLISHABLE_KEY
         return render(request, 'app/checkout.html', {'add': add, 'product': product, 'totalamount': totalamount, 'prod_items': prod_items})
-    #return render(request, 'app/product_details.html',{'product': product, 'item_already_in_cart': item_already_in_cart, 'totalitem': totalitem})
 
 @login_required
 def payment_done(request, **kwargs):
@@ -254,18 +247,10 @@ def payment_done(request, **kwargs):
         for c in cart:
             OrderPlaced(user=user, customer=customer, product=c.product, quantity=c.quantity).save()
             c.delete()
-        # context = super().payment_done(**kwargs)
-        # context['key'] = settings.STRIPE_PUBLIC_KEY
-
-
-        # return redirect("stripe-webhook")
         return redirect("stripe")
-        # return render(request, 'stripe.html')
 
     except Exception:
         return HttpResponse("Please provide address")
-        # messages.add_message(request,'Please add address from profile or select address in case provided already in profile')
-    # return redirect("checkout")
 
 class PaymentdoneView(View):
     def get(self, request, pk):
@@ -343,13 +328,6 @@ class ProfileView(View):
             reg.save()
             messages.success(request, 'Profile Updated Successfully')
         return render(request, 'app/profile.html', {'form': form, 'active': 'btn-primary'})
-
-
-# @method_decorator(login_required, name='dispatch')
-# class EditProfileView(View):
-#     def get(self, request):
-#         form = CustomerProfileForm()
-#         return render(request, 'app/editprofile.html', {'form': form, 'active': 'btn-primary'})
 
 @login_required
 def edit_profile(request):
@@ -488,10 +466,6 @@ def stripe_webhook(request):
 
       customer_email = session["customer_details"]["email"]
       product_id = session["metadata"]["product_id"]
-      # Fulfill the purchase...
-      # fulfill_order(session)
-
-      # product = Product.objects.get(id=product_id)
       product = Product.objects.get(title="Realme C21Y 32 GB")
 
       send_mail(
@@ -533,10 +507,6 @@ class HomePageView(TemplateView):
             totalamount = amount + shipping_amount
         # return render(self.request, 'app/checkout.html', {'add': add, 'totalamount': totalamount, 'cart_items': cart_items})
         product = Product.objects.get(title="Realme C21Y 32 GB")
-        # product = Product.objects.get(pk='prod_id')
-        # product = self.request.GET.get('prod_id')
-        # prod_items = Product.objects.filter(Q(id=product.id))
-        # prices = Product.objects.filter(discounted_price=product.discounted_price)
         context = super(HomePageView, self).get_context_data(**kwargs)
         context.update({
             "product": product,
@@ -643,5 +613,3 @@ class ShareInvoice(View):
             email.attach('new.pdf', pdf, "application/pdf")
             email.send()
         return HttpResponse({'msg': 'Invoice generated!'})
-            # return JsonResponse({'error' : str(e)})
-

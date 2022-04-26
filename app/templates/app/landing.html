@@ -2,7 +2,6 @@
 <html>
   <head>
     <title>Buy cool new product</title>
-<!--    <link rel="stylesheet" href="style.css">-->
 <style>
 body {
   display: flex;
@@ -105,7 +104,6 @@ button:hover {
           <h5>{{ product.discounted_price }}</h5>
         </div>
       </div>
-<!--      <form action="/create-checkout-session" method="POST">-->
       <form action="/create-checkout-session" method="POST">
         {% csrf_token %}
         <button type="submit" id="checkout-button">Checkout</button>

@@ -1,0 +1,22 @@
+{% extends 'seller/base.html' %}
+{% block title %} Seller Details {% endblock %}
+{% block css %}{% endblock %}
+{% block body %}
+<div class="main">
+
+    <!-- Specify fields to be displayed -->
+    {{ data.first_name }}<br/>
+    {{ data.last_name }}<br/>
+    {{ data.phone }}<br/>
+    {{ data.email }}<br/>
+    {{ data.stage_of_business }}<br/>
+    {{ data.company_name }}<br/>
+    {{ data.company_size }}<br/>
+    {{ data.company_address }}<br/>
+    {{ data.city }}<br/>
+    {{ data.zipcode }}<br/>
+    {{ data.state }}<br/>
+    {{ data.gst }}<br/>
+
+</div>
+{% endblock %}

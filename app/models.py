@@ -3,11 +3,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here
 
-# PERSON_CHOICES = (
-#     ('Mr Roopesh Rai', 'Mr Roopesh Rai'),
-#     ('Mr Om Ahuja', 'Mr Om Ahuja'),
-#     ('Mr Anand Tank', 'Mr Anand Tank'),
-# )
 class Contact(models.Model):
     sno = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -78,7 +73,7 @@ CATEGORY_CHOICES = (
 )
 
 class Product(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     stripe_product_id = models.CharField(max_length=100)
     selling_price = models.FloatField()
@@ -89,7 +84,7 @@ class Product(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=20)
     product_img = models.ImageField(upload_to='productimg')
     file = models.FileField(upload_to='product_files/', blank=True, null=True)
-    url = models.URLField()
+    url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return str(self.id)
@@ -157,6 +152,6 @@ class Invoice(models.Model):
 
 
 class InvoiceItems(models.Model):
-    invoice = models.ForeignKey(Invoice, on_delete = models.CASCADE)
-    product = models.ForeignKey(Product ,on_delete = models.CASCADE, related_name="invoice_product")
-    product_price = models.FloatField(default= 0)
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="invoice_product")
+    product_price = models.FloatField(default=0)

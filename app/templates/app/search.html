@@ -40,7 +40,7 @@
 
 <div class="container">
     {% for product, range , nSlides in allProds %}
-<br><!--<br><h1>Mobiles</h1>-->
+<br>
 <h1>{{product.0.category}}</h1>
 <div id="demo{{forloop.counter}}" class="carousel slide my-3" data-ride="carousel">
     <ul class="carousel-indicators">
@@ -59,7 +59,6 @@
                 <img src='/media/{{i.product_img}}' class="card-img-top" alt="...">
                 <h6 class="card-title">{{i.title}}</h6>
                 <p class="card-text">{{i.discounted_price}}</p>
-<!--                id="pr{{i.id}}"-->
                 <a href="{% url 'product_details' i.id %}">
                      <button  class="btn btn-primary cart">Details</button>
                 </a>

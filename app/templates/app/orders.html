@@ -48,18 +48,12 @@
         {% endif %}
 
         {% if op.status != 'Cancel' %}
-<!--            <form action="/orders/" class="d-inline" method="post">-->
-<!--                    {% csrf_token %}-->
-<!--                    <input type="hidden" name="prod_id" value={{Product.id}} id="prod_id">-->
-<!--                    <button type="submit" name="cancel" id="cancel" class="btn btn-primary shadow px-5 py-2" onclick="op.status == 'Cancel'">Cancel</button>-->
-<!--            </form>-->
         {% else %}
             <form action="{% url 'ordersdata' product.id %}" class="d-inline" method="post">
                 {% csrf_token %}
                     <input type="hidden" name="prod_id" value={{product.id}} id="prod_id">
                     <button type="submit" class="btn btn-primary shadow px-5 py-2">Delete</button>
             </form>
-<!--            <a href="{% url 'ordersdata' product.id %}" class="btn btn-danger shadow px-5 py-2 ms-4">Delete</a>-->
         {% endif %}
     </div>
    </div>

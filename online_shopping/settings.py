@@ -18,6 +18,8 @@ from pathlib import Path
 # )
 # environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import requests
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env file
@@ -36,6 +38,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["0673-103-239-146-99.ngrok.io", "localhost", "127.0.0.1"]
 
+LOGIN_URL = '/seller/accounts/login/'
+LOGIN_REDIRECT_URL = '/seller/register/'
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'sales'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
